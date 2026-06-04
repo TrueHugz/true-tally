@@ -20,6 +20,8 @@ export function useLogs(repo: WorkbookRepo, pendingVersion: number) {
   }, [repo]);
 
   // Re-merge whenever the queue changes (pendingVersion bumps) or on mount.
+  // Intentional load-on-mount: async fetch that setState()s after awaiting I/O, not a synchronous cascade.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { void reload(); }, [reload, pendingVersion]);
 
   return { entries, reload, error };

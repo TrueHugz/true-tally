@@ -25,6 +25,8 @@ export function useCatalog(repo: WorkbookRepo) {
     }
   }, [repo]);
 
+  // Intentional load-on-mount: async fetch that setState()s after awaiting I/O, not a synchronous cascade.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { void reload(); }, [reload]);
 
   return { institutions, branches, products, loading, error, reload };
