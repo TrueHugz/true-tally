@@ -1,73 +1,39 @@
-# React + TypeScript + Vite
+# TrueHugz Inventory Log
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Tablet web app for logging Stock Take / Stock Top Up activity to an Excel workbook
+in your OneDrive, with a per-product dashboard and Excel export. Client-only React +
+Vite SPA — no backend.
 
-Currently, two official plugins are available:
+## One-time setup
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### 1. Register an Azure app (free, ~5 min)
+1. Go to <https://entra.microsoft.com> → **App registrations** → **New registration**.
+2. Name: `TrueHugz Inventory Log`. Supported account types: **Accounts in any organizational directory and personal Microsoft accounts**.
+3. Platform: **Single-page application (SPA)**. Redirect URI: `http://localhost:5173`
+   (add your production URL later, e.g. `https://your-app.vercel.app`).
+4. Copy the **Application (client) ID**.
+5. **API permissions** → add Microsoft Graph **delegated** permissions: `User.Read`, `Files.ReadWrite`.
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 2. Configure the app
+```bash
+cp .env.example .env
+# edit .env and set VITE_MSAL_CLIENT_ID=<your client id>
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Develop
+```bash
+npm install
+npm run dev      # http://localhost:5173
+npm test         # run unit tests
 ```
+
+On first sign-in the app creates `TrueHugz-Inventory-Log.xlsx` at the root of your
+OneDrive (tabs: Institutions, Branches, Products, Logs) and seeds the NUH branches and
+the 16 product SKUs. You can edit that file directly in Excel anytime.
+
+## Deploy
+Build static files and host them anywhere (Vercel / Azure Static Web Apps / Netlify):
+```bash
+npm run build    # outputs dist/
+```
+Add the production URL as a redirect URI in the Azure app registration.
