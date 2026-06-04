@@ -6,15 +6,21 @@ import { mergeEntries } from "../domain/merge";
 
 export function useLogs(repo: WorkbookRepo, pendingVersion: number) {
   const [entries, setEntries] = useState<LogEntry[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   const reload = useCallback(async () => {
-    await repo.ensureWorkbook();
-    const server = await repo.getLogs();
-    setEntries(mergeEntries(server, loadPending()));
+    try {
+      await repo.ensureWorkbook();
+      const server = await repo.getLogs();
+      setEntries(mergeEntries(server, loadPending()));
+      setError(null);
+    } catch (e) {
+      setError(String(e));
+    }
   }, [repo]);
 
   // Re-merge whenever the queue changes (pendingVersion bumps) or on mount.
   useEffect(() => { void reload(); }, [reload, pendingVersion]);
 
-  return { entries, reload };
+  return { entries, reload, error };
 }

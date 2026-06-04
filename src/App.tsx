@@ -25,7 +25,7 @@ export default function App({ msal }: { msal: PublicClientApplication }) {
 
   const { institutions, branches, products, reload: reloadCatalog, error: catalogError } = useCatalog(repo);
   const queue = usePendingQueue(repo);
-  const { entries, reload: reloadLogs } = useLogs(repo, queue.version);
+  const { entries, reload: reloadLogs, error: logsError } = useLogs(repo, queue.version);
 
   const [institution, setInstitution] = useState("NUH Health & U");
   const [view, setView] = useState<View>("log");
@@ -82,6 +82,7 @@ export default function App({ msal }: { msal: PublicClientApplication }) {
       </div>
 
       {catalogError && <p className="errors">Could not load data: {catalogError}</p>}
+      {logsError && <p className="errors">Could not load logs: {logsError}</p>}
 
       {view === "log" ? (
         <LogEntryView
