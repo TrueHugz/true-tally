@@ -2,11 +2,14 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import type { AuthenticationResult, EventMessage } from "@azure/msal-browser";
 import { PublicClientApplication, EventType } from "@azure/msal-browser";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { msalConfig } from "./auth/msalConfig";
+import { makeQueryClient, persister, CACHE_MAX_AGE, CACHE_SCHEMA_VERSION } from "./queryClient";
 import App from "./App";
 import "./index.css";
 
 const msal = new PublicClientApplication(msalConfig);
+const queryClient = makeQueryClient();
 
 async function bootstrap() {
   await msal.initialize();
@@ -31,7 +34,12 @@ async function bootstrap() {
 
   createRoot(document.getElementById("root")!).render(
     <StrictMode>
-      <App msal={msal} />
+      <PersistQueryClientProvider
+        client={queryClient}
+        persistOptions={{ persister, maxAge: CACHE_MAX_AGE, buster: CACHE_SCHEMA_VERSION }}
+      >
+        <App msal={msal} />
+      </PersistQueryClientProvider>
     </StrictMode>,
   );
 }
