@@ -29,13 +29,13 @@ export function RecentEntries({
   const newestId = recent[0]?.entryId;
 
   return (
-    <section className="card recent stagger-after" aria-label="Recent additions">
-      <h2 className="section-title">Recent additions</h2>
+    <section className="mt-5 rounded-card border border-line bg-surface p-[clamp(20px,3.5vw,30px)] shadow-card motion-safe:animate-[rise_.5s_ease_.18s_both]" aria-label="Recent additions">
+      <h2 className="mb-[14px] flex items-center gap-[10px] font-display text-[18px] font-semibold text-ink">Recent additions</h2>
 
       {loading && entries.length === 0 ? (
-        <div className="recent__list">
+        <div className="flex flex-col">
           {[0, 1, 2].map((i) => (
-            <div className="skeleton-row" key={i}>
+            <div className="flex items-center gap-[14px] border-b border-line px-[4px] py-[14px] last:border-b-0" key={i}>
               <Skeleton style={{ width: 11, height: 11, borderRadius: 999 }} />
               <div style={{ flex: 1 }}>
                 <Skeleton style={{ width: "55%", height: 16 }} />
@@ -57,28 +57,36 @@ export function RecentEntries({
           }
         />
       ) : (
-        <div className="recent__list">
+        <div className="flex flex-col">
           {recent.map((e) => {
             const isTake = e.activityType === "Stock Take";
             const pending = pendingIds.has(e.entryId);
+            const isNewest = e.entryId === newestId;
             return (
               <div
                 key={e.entryId}
-                className={`recent-row${e.entryId === newestId ? " is-newest" : ""}`}
+                className={`flex items-center gap-[14px] border-b border-line px-[4px] py-[14px] last:border-b-0 ${
+                  isNewest
+                    ? "rounded-field motion-safe:animate-[row-in_.35s_ease_both,highlight-fade_1.6s_ease_.35s_both]"
+                    : "motion-safe:animate-[row-in_.35s_ease_both]"
+                }`}
               >
-                <span className={`recent-row__dot ${isTake ? "is-take" : "is-topup"}`} aria-hidden="true" />
-                <div className="recent-row__main">
-                  <div className="recent-row__product">{e.product}</div>
-                  <div className="recent-row__meta">
+                <span
+                  className={`size-[11px] flex-none rounded-pill shadow-[0_0_0_4px_rgba(0,0,0,.03)] ${isTake ? "bg-take" : "bg-topup"}`}
+                  aria-hidden="true"
+                />
+                <div className="min-w-0 flex-1">
+                  <div className="overflow-hidden text-ellipsis whitespace-nowrap font-display text-[16px] font-medium text-ink">{e.product}</div>
+                  <div className="mt-[3px] font-mono text-[12px] text-ink-3">
                     {e.branch} &middot; {formatDate(e.activityDate)}
                   </div>
                 </div>
-                <div className="recent-row__right">
-                  <span className="recent-row__qty">{e.quantity}</span>
-                  <span className="recent-row__kind">{isTake ? "Take" : "Top Up"}</span>
+                <div className="flex flex-none flex-col items-end gap-[2px] text-right">
+                  <span className="font-display text-[24px] font-bold leading-none tabular-nums text-ink">{e.quantity}</span>
+                  <span className="text-[10px] font-bold uppercase tracking-[.08em] text-ink-3">{isTake ? "Take" : "Top Up"}</span>
                   {pending && (
-                    <span className="syncing-pill">
-                      <span className="syncing-pill__dot" aria-hidden="true" />
+                    <span className="mt-1 inline-flex items-center gap-[6px] rounded-pill bg-warn-bg px-[9px] py-[4px] text-[11px] font-bold text-warn-ink">
+                      <span className="size-[6px] rounded-pill bg-current" aria-hidden="true" />
                       Syncing…
                     </span>
                   )}
