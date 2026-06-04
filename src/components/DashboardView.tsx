@@ -6,17 +6,23 @@ import { Segmented } from "./Segmented";
 import { TotalsTable } from "./TotalsTable";
 
 export function DashboardView({
-  entries, today, onExport,
+  entries, today, onExport, loading = false,
 }: {
   entries: LogEntry[];
   today: string;
   onExport: (window: TimeWindow) => void;
+  loading?: boolean;
 }) {
   const [window, setWindow] = useState<TimeWindow>("day");
   const totals = totalsByProduct(filterByWindow(entries, window, today));
+  const totalUnits = totals.reduce((sum, t) => sum + t.total, 0);
+
+  const periodLabel = window === "day" ? "today" : window === "month" ? "this month" : "to date";
 
   return (
-    <div className="card">
+    <div className="card stagger-card">
+      <h2 className="section-title">Totals</h2>
+
       <Segmented
         ariaLabel="Time filter"
         options={[
@@ -27,8 +33,15 @@ export function DashboardView({
         value={window}
         onChange={setWindow}
       />
-      <TotalsTable totals={totals} />
-      <div style={{ marginTop: 20 }}>
+
+      <div className="stat">
+        <span className="stat__num">{totalUnits}</span>
+        <span className="stat__label">total units {periodLabel}</span>
+      </div>
+
+      <TotalsTable totals={totals} loading={loading} />
+
+      <div className="save-row">
         <button type="button" className="primary" onClick={() => onExport(window)}>
           Generate Excel Report
         </button>

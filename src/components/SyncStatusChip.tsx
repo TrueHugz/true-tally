@@ -13,6 +13,7 @@ export function SyncStatusChip({
     : "Sync failed — will retry";
   return (
     <button type="button" className={`chip ${state}`} onClick={onSync} title="Sync now">
+      <span className="chip__dot" aria-hidden="true" />
       {text}
     </button>
   );

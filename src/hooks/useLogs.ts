@@ -7,8 +7,10 @@ import { mergeEntries } from "../domain/merge";
 export function useLogs(repo: WorkbookRepo, pendingVersion: number) {
   const [entries, setEntries] = useState<LogEntry[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const reload = useCallback(async () => {
+    setLoading(true);
     try {
       await repo.ensureWorkbook();
       const server = await repo.getLogs();
@@ -16,6 +18,8 @@ export function useLogs(repo: WorkbookRepo, pendingVersion: number) {
       setError(null);
     } catch (e) {
       setError(String(e));
+    } finally {
+      setLoading(false);
     }
   }, [repo]);
 
@@ -24,5 +28,5 @@ export function useLogs(repo: WorkbookRepo, pendingVersion: number) {
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { void reload(); }, [reload, pendingVersion]);
 
-  return { entries, reload, error };
+  return { entries, reload, error, loading };
 }

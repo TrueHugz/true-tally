@@ -8,7 +8,12 @@ export function InstitutionSelector({
   onChange: (v: string) => void;
 }) {
   return (
-    <select aria-label="Institution" value={value} onChange={(e) => onChange(e.target.value)} style={{ maxWidth: 320 }}>
+    <select
+      aria-label="Institution"
+      className="institution-select"
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+    >
       {institutions.map((i) => (
         <option key={i.institution} value={i.institution}>{i.institution}</option>
       ))}

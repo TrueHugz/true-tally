@@ -6,6 +6,7 @@ export function ViewToggle({ value, onChange }: { value: View; onChange: (v: Vie
   return (
     <Segmented
       ariaLabel="View"
+      className="view-toggle"
       options={[{ value: "log", label: "Log Entry" }, { value: "dashboard", label: "Dashboard" }]}
       value={value}
       onChange={onChange}

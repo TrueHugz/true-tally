@@ -39,8 +39,11 @@ export function SearchableSelect({
               {o.label}
             </button>
           ))}
+          {filtered.length === 0 && !query.trim() && (
+            <div className="combo-empty">No options yet — type to add one.</div>
+          )}
           {query.trim() && (
-            <button type="button" className="muted" onMouseDown={(e) => e.preventDefault()}
+            <button type="button" className="combo-add" onMouseDown={(e) => e.preventDefault()}
               onClick={() => { onAddNew(query.trim()); setOpen(false); }}>
               {addNewLabel}
             </button>

@@ -51,34 +51,37 @@ export function LogEntryView({
   }
 
   return (
-    <div className="card">
-      <label>Branch</label>
+    <div className="card stagger-card">
+      <h2 className="section-title">Log an entry</h2>
+
+      <label className="field-label">Branch</label>
       <SearchableSelect label="Branch" options={branchOptions} value={branch}
         onSelect={setBranch} onAddNew={onAddBranch} addNewLabel="+ Add branch" />
 
-      <label>Activity Type</label>
+      <label className="field-label">Activity Type</label>
       <Segmented
         ariaLabel="Activity Type"
+        variant="activity"
         options={[{ value: "Stock Take", label: "Stock Take" }, { value: "Stock Top Up", label: "Stock Top Up" }]}
         value={activityType}
         onChange={(v) => setActivityType(v)}
       />
 
-      <label htmlFor="activity-date">Activity Date</label>
+      <label className="field-label" htmlFor="activity-date">Activity Date</label>
       <input id="activity-date" type="date" value={activityDate} onChange={(e) => setActivityDate(e.target.value)} />
 
-      <label>Product</label>
+      <label className="field-label">Product</label>
       <SearchableSelect label="Product" options={productOptions} value={sku}
         onSelect={setSku} onAddNew={onAddProduct} addNewLabel="+ Add product" />
 
-      <label>Quantity</label>
+      <label className="field-label">Quantity</label>
       <QuantityStepper value={quantity} onChange={setQuantity} />
 
       {errors.length > 0 && (
         <ul className="errors">{errors.map((e) => <li key={e}>{e}</li>)}</ul>
       )}
 
-      <div style={{ marginTop: 20 }}>
+      <div className="save-row">
         <button type="button" className="primary" onClick={handleSave}>Save entry</button>
       </div>
     </div>
