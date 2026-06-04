@@ -52,7 +52,7 @@ export function LogEntryView({
 
   return (
     <div className="card">
-      <label htmlFor="">Branch</label>
+      <label>Branch</label>
       <SearchableSelect label="Branch" options={branchOptions} value={branch}
         onSelect={setBranch} onAddNew={onAddBranch} addNewLabel="+ Add branch" />
 
