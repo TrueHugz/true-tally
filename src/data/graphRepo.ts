@@ -24,9 +24,9 @@ export class GraphWorkbookRepo implements WorkbookRepo {
     const res = await fetch(`${GRAPH}${path}`, {
       ...init,
       headers: {
+        ...(init.headers as Record<string, string> | undefined ?? {}),
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
-        ...(init.headers as Record<string, string> | undefined ?? {}),
       },
     });
     if (!res.ok) {
@@ -72,9 +72,10 @@ export class GraphWorkbookRepo implements WorkbookRepo {
       const used = (await this.req(
         `/me/drive/items/${this.itemId}/workbook/worksheets/${encodeURIComponent(sheet)}/usedRange?$select=address`,
       )) as { address: string };
+      const range = used.address.substring(used.address.lastIndexOf("!") + 1); // strip "Sheet!" prefix
       const added = (await this.req(
         `/me/drive/items/${this.itemId}/workbook/worksheets/${encodeURIComponent(sheet)}/tables/add`,
-        { method: "POST", body: JSON.stringify({ address: used.address, hasHeaders: true }) },
+        { method: "POST", body: JSON.stringify({ address: range, hasHeaders: true }) },
       )) as { id: string };
       await this.req(`/me/drive/items/${this.itemId}/workbook/tables/${added.id}`, {
         method: "PATCH",
@@ -114,6 +115,7 @@ export class GraphWorkbookRepo implements WorkbookRepo {
   async appendLog(entry: LogEntry): Promise<void> {
     await this.addRow("Logs", logToRow(entry));
   }
+  // Single-user volumes: a full scan is acceptable; revisit if log volume grows.
   async hasLog(entryId: string): Promise<boolean> {
     return (await this.getLogs()).some((l) => l.entryId === entryId);
   }
