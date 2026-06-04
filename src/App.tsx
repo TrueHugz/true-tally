@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { PublicClientApplication } from "@azure/msal-browser";
 import { loginRequest } from "./auth/msalConfig";
 import { getAccessToken } from "./auth/authProvider";
@@ -29,6 +29,19 @@ export default function App({ msal }: { msal: PublicClientApplication }) {
 
   const [institution, setInstitution] = useState("NUH Health & U");
   const [view, setView] = useState<View>("log");
+
+  const refresh = useCallback(() => {
+    void reloadCatalog();
+    void reloadLogs();
+  }, [reloadCatalog, reloadLogs]);
+
+  useEffect(() => {
+    const onFocus = () => {
+      if (msal.getActiveAccount()) refresh();
+    };
+    window.addEventListener("focus", onFocus);
+    return () => window.removeEventListener("focus", onFocus);
+  }, [refresh, msal]);
 
   if (!account) {
     return <SignInScreen onSignIn={() => void msal.loginRedirect(loginRequest)} />;
@@ -75,7 +88,11 @@ export default function App({ msal }: { msal: PublicClientApplication }) {
     <div className="app">
       <div className="topbar">
         <InstitutionSelector institutions={institutions} value={institution} onChange={setInstitution} />
-        <SyncStatusChip state={queue.state} pendingCount={queue.pendingCount} onSync={() => void queue.sync()} />
+        <div className="actions">
+          <SyncStatusChip state={queue.state} pendingCount={queue.pendingCount} onSync={() => void queue.sync()} />
+          <button onClick={refresh}>Refresh</button>
+          <button onClick={() => void msal.logoutRedirect()}>Sign out</button>
+        </div>
       </div>
 
       <div style={{ marginBottom: 16 }}>

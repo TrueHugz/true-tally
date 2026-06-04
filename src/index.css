@@ -40,3 +40,6 @@ td.num, th.num { text-align: right; }
 .combo-list button { display: block; width: 100%; text-align: left; border: 0; border-bottom: 1px solid #f0f0f0; }
 .combo-list button:hover { background: #eef4ff; }
 .muted { color: #6b7280; font-size: 14px; }
+
+.actions { display: flex; gap: 8px; align-items: center; }
+.actions button:not(.chip) { font-size: 14px; padding: 8px 14px; }
