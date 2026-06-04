@@ -9,10 +9,19 @@ import {
 const GRAPH = "https://graph.microsoft.com/v1.0";
 export const FILE_NAME = "TrueHugz-Inventory-Log.xlsx";
 
+export const REQUIRED_TABLES = ["Institutions", "Branches", "Products", "Logs"] as const;
+
+/** Which required tables are absent from the workbook's existing table names. */
+export function tablesToCreate(existing: string[], required: readonly string[] = REQUIRED_TABLES): string[] {
+  const have = new Set(existing);
+  return required.filter((t) => !have.has(t));
+}
+
 type Cell = string | number;
 
 export class GraphWorkbookRepo implements WorkbookRepo {
   private itemId: string | null = null;
+  private ready: Promise<void> | null = null;
   private getToken: () => Promise<string>;
 
   constructor(getToken: () => Promise<string>) {
@@ -48,31 +57,45 @@ export class GraphWorkbookRepo implements WorkbookRepo {
     return (await res.json()) as { id: string };
   }
 
-  async ensureWorkbook(): Promise<void> {
-    if (this.itemId) return;
-    try {
-      const item = (await this.req(`/me/drive/root:/${encodeURIComponent(FILE_NAME)}`)) as { id: string };
-      this.itemId = item.id;
-      return;
-    } catch (e) {
-      if ((e as { status?: number }).status !== 404) throw e;
+  ensureWorkbook(): Promise<void> {
+    // One in-flight provisioning shared by all concurrent callers; reset on failure so a later call can retry.
+    if (!this.ready) {
+      this.ready = this.provision().catch((e) => {
+        this.ready = null;
+        throw e;
+      });
     }
-    const created = await this.putContent(
-      `/me/drive/root:/${encodeURIComponent(FILE_NAME)}:/content`,
-      await buildSeedWorkbookBytes(),
-    );
-    this.itemId = created.id;
-    await this.defineTables();
+    return this.ready;
   }
 
-  /** Convert each seeded sheet's used range into a named Excel Table so the rows API works. */
-  private async defineTables(): Promise<void> {
-    const sheets = ["Institutions", "Branches", "Products", "Logs"];
-    for (const sheet of sheets) {
+  private async provision(): Promise<void> {
+    if (!this.itemId) {
+      try {
+        const item = (await this.req(`/me/drive/root:/${encodeURIComponent(FILE_NAME)}`)) as { id: string };
+        this.itemId = item.id;
+      } catch (e) {
+        if ((e as { status?: number }).status !== 404) throw e;
+        const created = await this.putContent(
+          `/me/drive/root:/${encodeURIComponent(FILE_NAME)}:/content`,
+          await buildSeedWorkbookBytes(),
+        );
+        this.itemId = created.id;
+      }
+    }
+    await this.ensureTables();
+  }
+
+  /** Create any required Excel Tables that don't yet exist (heals a partially-provisioned file). */
+  private async ensureTables(): Promise<void> {
+    const existing = (await this.req(
+      `/me/drive/items/${this.itemId}/workbook/tables?$select=name`,
+    )) as { value: { name: string }[] };
+    const missing = tablesToCreate(existing.value.map((t) => t.name));
+    for (const sheet of missing) {
       const used = (await this.req(
         `/me/drive/items/${this.itemId}/workbook/worksheets/${encodeURIComponent(sheet)}/usedRange?$select=address`,
       )) as { address: string };
-      const range = used.address.substring(used.address.lastIndexOf("!") + 1); // strip "Sheet!" prefix
+      const range = used.address.substring(used.address.lastIndexOf("!") + 1); // worksheet-scoped add wants an UNqualified range
       const added = (await this.req(
         `/me/drive/items/${this.itemId}/workbook/worksheets/${encodeURIComponent(sheet)}/tables/add`,
         { method: "POST", body: JSON.stringify({ address: range, hasHeaders: true }) },
