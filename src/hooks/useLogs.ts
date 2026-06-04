@@ -19,6 +19,9 @@ export function useLogs(repo: WorkbookRepo) {
   return {
     entries: q.data ?? [],
     reload,
+    // React Query keeps cached data on a failed background refetch, so `error` can be
+    // set while `entries` still holds the last-known rows. Consumers should not blank
+    // the list just because `error` is truthy.
     error: q.error ? String(q.error) : null,
     loading: q.isPending,
   };
