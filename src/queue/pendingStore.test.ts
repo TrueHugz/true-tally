@@ -27,4 +27,8 @@ describe("pendingStore", () => {
     localStorage.setItem("truehugz.pendingEntries", "{not json");
     expect(loadPending()).toEqual([]);
   });
+  it("recovers from non-array valid JSON", () => {
+    localStorage.setItem("truehugz.pendingEntries", "null");
+    expect(loadPending()).toEqual([]);
+  });
 });
