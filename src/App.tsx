@@ -139,21 +139,21 @@ export default function App({ msal }: { msal: PublicClientApplication }) {
   }
 
   return (
-    <div className="relative z-[1] mx-auto max-w-[920px] px-[clamp(14px,4vw,28px)] pt-[clamp(16px,4vw,32px)] pb-24">
+    <div className="relative z-1 mx-auto max-w-230 px-[clamp(14px,4vw,28px)] pt-[clamp(16px,4vw,32px)] pb-24">
       <header className="mb-[clamp(18px,3vw,28px)] flex flex-wrap items-center justify-between gap-4 motion-safe:animate-[rise_.5s_ease_both]">
-        <div className="flex min-w-0 items-center gap-[14px]">
-          <span className="grid size-12 flex-none place-items-center rounded-[14px] bg-[linear-gradient(150deg,var(--color-accent)_0%,var(--color-accent-2)_100%)] shadow-[0_8px_22px_-10px_rgba(14,124,102,.7),inset_0_1px_0_rgba(255,255,255,.25)]"><BrandMark size={28} /></span>
+        <div className="flex min-w-0 items-center gap-3.5">
+          <span className="brand-tile grid size-12 flex-none place-items-center rounded-tile shadow-tile"><BrandMark size={28} /></span>
           <span className="flex min-w-0 flex-col leading-[1.05]">
-            <span className="font-display text-[clamp(20px,3.4vw,26px)] font-bold tracking-[-.02em] text-ink">TrueHugz</span>
-            <span className="mt-[3px] font-mono text-[11px] uppercase tracking-[.12em] text-ink-3">Inventory Log</span>
+            <span className="font-display text-wordmark font-bold tracking-display text-ink">TrueHugz</span>
+            <span className="mt-0.75 font-mono text-tag uppercase tracking-caps text-ink-3">Inventory Log</span>
           </span>
         </div>
-        <div className="flex flex-wrap items-center gap-[10px] max-[560px]:w-full max-[560px]:justify-between">
+        <div className="flex flex-wrap items-center gap-2.5 max-narrow:w-full max-narrow:justify-between">
           <InstitutionSelector institutions={institutions} value={institution} onChange={setInstitution} />
           <SyncStatusChip state={queue.state} pendingCount={queue.pendingCount} onSync={() => void queue.sync()} />
           <button
             type="button"
-            className={`grid size-11 min-h-11 place-items-center rounded-pill border border-line-2 bg-surface p-0 text-ink-2 [transition:background-color_.15s_ease,border-color_.15s_ease,color_.15s_ease,box-shadow_.15s_ease,transform_.08s_ease] hover:bg-surface-2 hover:text-ink active:scale-[.98] focus-visible:border-accent focus-visible:shadow-[0_0_0_4px_var(--color-accent-soft)] focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 disabled:transform-none [&_svg]:block [&_svg]:size-5${refreshing ? " [&_svg]:animate-spin [&_svg]:[animation-duration:900ms]" : ""}`}
+            className={`grid size-11 min-h-11 place-items-center rounded-pill border border-line-2 bg-surface p-0 text-ink-2 transition duration-150 ease-out hover:bg-surface-2 hover:text-ink active:scale-[.98] focus-visible:border-accent focus-visible:ring-4 focus-visible:ring-accent-soft focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 disabled:transform-none [&_svg]:block [&_svg]:size-5${refreshing ? " [&_svg]:animate-spin [&_svg]:[animation-duration:900ms]" : ""}`}
             aria-label="Refresh"
             onClick={refresh}
           >
@@ -161,7 +161,7 @@ export default function App({ msal }: { msal: PublicClientApplication }) {
           </button>
           <button
             type="button"
-            className="min-h-11 cursor-pointer rounded-field border border-line-2 bg-surface px-[18px] py-3 text-base font-semibold text-ink-2 [transition:background-color_.15s_ease,border-color_.15s_ease,color_.15s_ease,box-shadow_.15s_ease,transform_.08s_ease] hover:bg-surface-2 hover:text-ink active:scale-[.98] focus-visible:border-accent focus-visible:shadow-[0_0_0_4px_var(--color-accent-soft)] focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 disabled:transform-none"
+            className="min-h-11 cursor-pointer rounded-field border border-line-2 bg-surface px-4.5 py-3 text-base font-semibold text-ink-2 transition duration-150 ease-out hover:bg-surface-2 hover:text-ink active:scale-[.98] focus-visible:border-accent focus-visible:ring-4 focus-visible:ring-accent-soft focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 disabled:transform-none"
             onClick={() => void msal.logoutRedirect()}
           >Sign out</button>
         </div>
@@ -181,10 +181,10 @@ export default function App({ msal }: { msal: PublicClientApplication }) {
           {showFormSkeleton ? (
             <div className="rounded-card border border-line bg-surface p-[clamp(20px,3.5vw,30px)] shadow-card motion-safe:animate-[rise_.5s_ease_.12s_both]" aria-busy="true">
               <Skeleton style={{ width: "30%", height: 20, marginBottom: 18 }} />
-              <Skeleton className="mt-2 h-[50px]" />
-              <Skeleton className="mt-2 h-[50px]" style={{ marginTop: 22 }} />
-              <Skeleton className="mt-2 h-[50px]" />
-              <Skeleton className="mt-2 h-[50px]" style={{ marginTop: 22 }} />
+              <Skeleton className="mt-2 h-12.5" />
+              <Skeleton className="mt-2 h-12.5" style={{ marginTop: 22 }} />
+              <Skeleton className="mt-2 h-12.5" />
+              <Skeleton className="mt-2 h-12.5" style={{ marginTop: 22 }} />
               <Skeleton style={{ height: 104, marginTop: 22 }} />
               <Skeleton style={{ height: 58, marginTop: 24 }} />
             </div>

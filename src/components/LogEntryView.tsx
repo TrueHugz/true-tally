@@ -50,11 +50,11 @@ export function LogEntryView({
     setErrors([]);
   }
 
-  const fieldLabel = "mt-[22px] mb-2 block font-body text-[12px] font-bold uppercase tracking-[.08em] text-ink-2";
+  const fieldLabel = "mt-5.5 mb-2 block font-body text-xs font-bold uppercase tracking-label text-ink-2";
 
   return (
     <div className="rounded-card border border-line bg-surface p-[clamp(20px,3.5vw,30px)] shadow-card motion-safe:animate-[rise_.5s_ease_.12s_both]">
-      <h2 className="mb-[14px] flex items-center gap-[10px] font-display text-[18px] font-semibold text-ink">Log an entry</h2>
+      <h2 className="mb-3.5 flex items-center gap-2.5 font-display text-lg font-semibold text-ink">Log an entry</h2>
 
       <label className={`${fieldLabel} mt-1`}>Branch</label>
       <SearchableSelect label="Branch" options={branchOptions} value={branch}
@@ -75,7 +75,7 @@ export function LogEntryView({
         type="date"
         value={activityDate}
         onChange={(e) => setActivityDate(e.target.value)}
-        className="w-full min-h-[50px] rounded-field border border-line bg-surface px-[15px] py-[14px] font-mono text-[16px] text-ink [transition:border-color_.15s_ease,box-shadow_.15s_ease,background-color_.15s_ease] focus:border-accent focus:shadow-[0_0_0_4px_var(--color-accent-soft)] focus:outline-none"
+        className="w-full min-h-12.5 rounded-field border border-line bg-surface px-3.75 py-3.5 font-mono text-base text-ink transition duration-150 ease-out focus:border-accent focus:ring-4 focus:ring-accent-soft focus:outline-none"
       />
 
       <label className={fieldLabel}>Product</label>
@@ -86,9 +86,9 @@ export function LogEntryView({
       <QuantityStepper value={quantity} onChange={setQuantity} />
 
       {errors.length > 0 && (
-        <ul className="mt-[18px] list-none rounded-[16px] border border-[#efc7c0] bg-err-bg px-4 py-[14px] text-err-ink">
+        <ul className="mt-4.5 list-none rounded-2xl border border-[#efc7c0] bg-err-bg px-4 py-3.5 text-err-ink">
           {errors.map((e) => (
-            <li key={e} className="error-bullet my-[6px] flex items-start gap-[9px] text-[15px] font-medium">{e}</li>
+            <li key={e} className="error-bullet my-1.5 flex items-start gap-2.25 text-note font-medium">{e}</li>
           ))}
         </ul>
       )}
@@ -96,7 +96,7 @@ export function LogEntryView({
       <div className="mt-6">
         <button
           type="button"
-          className="w-full cursor-pointer rounded-field border border-accent bg-accent p-[18px] text-[18px] font-bold text-white shadow-[0_12px_26px_-12px_rgba(14,124,102,.65)] [transition:background-color_.15s_ease,border-color_.15s_ease,color_.15s_ease,box-shadow_.15s_ease,transform_.08s_ease] hover:border-accent-2 hover:bg-accent-2 active:scale-[.98] focus-visible:shadow-[0_0_0_4px_var(--color-accent-soft),0_12px_26px_-12px_rgba(14,124,102,.65)] focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 disabled:transform-none"
+          className="w-full cursor-pointer rounded-field border border-accent bg-accent p-4.5 text-lg font-bold text-white shadow-cta transition duration-150 ease-out hover:border-accent-2 hover:bg-accent-2 active:scale-[.98] focus-visible:ring-4 focus-visible:ring-accent-soft focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 disabled:transform-none"
           onClick={handleSave}
         >Save entry</button>
       </div>

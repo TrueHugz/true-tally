@@ -17,26 +17,26 @@ export function StateBanner({
       ? "border-[#ecd6a6] bg-warn-bg text-warn-ink"
       : "border-[#efc7c0] bg-err-bg text-err-ink";
   return (
-    <div className={`mb-[18px] flex items-start gap-[14px] rounded-[16px] border px-[20px] py-[18px] ${toneCls}`} role="alert">
-      <span className="mt-[1px] size-6 flex-none [&_svg]:block [&_svg]:size-6" aria-hidden="true">
+    <div className={`mb-4.5 flex items-start gap-3.5 rounded-2xl border px-5 py-4.5 ${toneCls}`} role="alert">
+      <span className="mt-px size-6 flex-none [&_svg]:block [&_svg]:size-6" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="12" cy="12" r="9.5" />
           <path d="M12 7.5v5M12 16.2h.01" />
         </svg>
       </span>
       <div className="min-w-0 flex-1">
-        <div className="font-display text-[16px] font-bold">{title}</div>
-        <div className="mt-1 text-[14px] text-inherit opacity-[.92]">{message}</div>
+        <div className="font-display text-base font-bold">{title}</div>
+        <div className="mt-1 text-sm text-inherit opacity-[.92]">{message}</div>
         {detail && (
-          <details className="mt-[10px] text-[13px]">
+          <details className="mt-2.5 text-meta">
             <summary className="cursor-pointer font-semibold opacity-[.85]">Technical details</summary>
-            <pre className="mt-2 whitespace-pre-wrap break-words rounded-field bg-black/5 px-[12px] py-[10px] font-mono text-[12px]">{detail}</pre>
+            <pre className="mt-2 whitespace-pre-wrap break-words rounded-field bg-black/5 px-3 py-2.5 font-mono text-xs">{detail}</pre>
           </details>
         )}
         {onRetry && (
           <button
             type="button"
-            className="mt-[12px] min-h-[40px] w-auto cursor-pointer rounded-field border border-current bg-white/70 px-4 py-[9px] text-base font-semibold text-inherit [transition:background-color_.15s_ease,border-color_.15s_ease,color_.15s_ease,box-shadow_.15s_ease,transform_.08s_ease] hover:border-ink-3 active:scale-[.98] focus-visible:border-accent focus-visible:shadow-[0_0_0_4px_var(--color-accent-soft)] focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+            className="mt-3 min-h-10 w-auto cursor-pointer rounded-field border border-current bg-white/70 px-4 py-2.25 text-base font-semibold text-inherit transition duration-150 ease-out hover:border-ink-3 active:scale-[.98] focus-visible:border-accent focus-visible:ring-4 focus-visible:ring-accent-soft focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
             onClick={onRetry}
           >
             Retry

@@ -27,18 +27,18 @@ export function SearchableSelect({
         aria-label={label}
         value={open ? query : selectedLabel}
         placeholder={`Search ${label.toLowerCase()}…`}
-        className="combo-search w-full min-h-[50px] rounded-field border border-line bg-surface py-[14px] pl-[15px] pr-[44px] font-body text-[17px] text-ink placeholder:text-ink-3 [transition:border-color_.15s_ease,box-shadow_.15s_ease,background-color_.15s_ease] focus:border-accent focus:shadow-[0_0_0_4px_var(--color-accent-soft)] focus:outline-none"
+        className="combo-search w-full min-h-12.5 rounded-field border border-line bg-surface py-3.5 pl-3.75 pr-11 font-body text-control text-ink placeholder:text-ink-3 transition duration-150 ease-out focus:border-accent focus:ring-4 focus:ring-accent-soft focus:outline-none"
         onFocus={() => { setOpen(true); setQuery(""); }}
         onChange={(e) => setQuery(e.target.value)}
         onBlur={() => setTimeout(() => setOpen(false), 150)}
       />
       {open && (
-        <div className="absolute inset-x-0 z-30 mt-2 max-h-[300px] overflow-auto rounded-[16px] border border-line bg-surface p-[6px] shadow-pop motion-safe:animate-[pop-in_.14s_ease]">
+        <div className="absolute inset-x-0 z-30 mt-2 max-h-75 overflow-auto rounded-2xl border border-line bg-surface p-1.5 shadow-pop motion-safe:animate-[pop-in_.14s_ease]">
           {filtered.map((o) => (
             <button
               key={o.value}
               type="button"
-              className="block min-h-12 w-full cursor-pointer rounded-field border border-transparent bg-transparent px-[14px] py-[13px] text-left font-medium text-ink [transition:background-color_.15s_ease,border-color_.15s_ease,color_.15s_ease] hover:bg-surface-2"
+              className="block min-h-12 w-full cursor-pointer rounded-field border border-transparent bg-transparent px-3.5 py-3.25 text-left font-medium text-ink transition duration-150 ease-out hover:bg-surface-2"
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => { onSelect(o.value); setOpen(false); }}
             >
@@ -46,12 +46,12 @@ export function SearchableSelect({
             </button>
           ))}
           {filtered.length === 0 && !query.trim() && (
-            <div className="p-[14px] text-[14px] text-ink-3">No options yet — type to add one.</div>
+            <div className="p-3.5 text-sm text-ink-3">No options yet — type to add one.</div>
           )}
           {query.trim() && (
             <button
               type="button"
-              className="mt-1 block min-h-12 w-full cursor-pointer rounded-b-field border border-transparent border-t-line bg-transparent px-[14px] py-[13px] text-left font-bold text-accent [transition:background-color_.15s_ease,border-color_.15s_ease,color_.15s_ease] hover:bg-accent-soft"
+              className="mt-1 block min-h-12 w-full cursor-pointer rounded-b-field border border-transparent border-t-line bg-transparent px-3.5 py-3.25 text-left font-bold text-accent transition duration-150 ease-out hover:bg-accent-soft"
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => { onAddNew(query.trim()); setOpen(false); }}
             >

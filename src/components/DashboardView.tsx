@@ -21,7 +21,7 @@ export function DashboardView({
 
   return (
     <div className="rounded-card border border-line bg-surface p-[clamp(20px,3.5vw,30px)] shadow-card motion-safe:animate-[rise_.5s_ease_.12s_both]">
-      <h2 className="mb-[14px] flex items-center gap-[10px] font-display text-[18px] font-semibold text-ink">Totals</h2>
+      <h2 className="mb-3.5 flex items-center gap-2.5 font-display text-lg font-semibold text-ink">Totals</h2>
 
       <Segmented
         ariaLabel="Time filter"
@@ -34,9 +34,9 @@ export function DashboardView({
         onChange={setWindow}
       />
 
-      <div className="mt-[6px] mb-[22px] flex items-baseline gap-[14px] rounded-[16px] border border-line bg-surface-2 p-[20px] max-[560px]:flex-col max-[560px]:items-start max-[560px]:gap-[4px]">
-        <span className="font-display text-[clamp(40px,9vw,58px)] font-extrabold leading-[.9] tabular-nums text-accent">{totalUnits}</span>
-        <span className="font-body text-[13px] font-semibold uppercase tracking-[.06em] text-ink-2">total units {periodLabel}</span>
+      <div className="mt-1.5 mb-5.5 flex items-baseline gap-3.5 rounded-2xl border border-line bg-surface-2 p-5 max-narrow:flex-col max-narrow:items-start max-narrow:gap-1">
+        <span className="font-display text-stat font-extrabold leading-[.9] tabular-nums text-accent">{totalUnits}</span>
+        <span className="font-body text-meta font-semibold uppercase tracking-stat text-ink-2">total units {periodLabel}</span>
       </div>
 
       <TotalsTable totals={totals} loading={loading} />
@@ -44,7 +44,7 @@ export function DashboardView({
       <div className="mt-6">
         <button
           type="button"
-          className="w-full cursor-pointer rounded-field border border-accent bg-accent p-[18px] text-[18px] font-bold text-white shadow-[0_12px_26px_-12px_rgba(14,124,102,.65)] [transition:background-color_.15s_ease,border-color_.15s_ease,color_.15s_ease,box-shadow_.15s_ease,transform_.08s_ease] hover:border-accent-2 hover:bg-accent-2 active:scale-[.98] focus-visible:shadow-[0_0_0_4px_var(--color-accent-soft),0_12px_26px_-12px_rgba(14,124,102,.65)] focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 disabled:transform-none"
+          className="w-full cursor-pointer rounded-field border border-accent bg-accent p-4.5 text-lg font-bold text-white shadow-cta transition duration-150 ease-out hover:border-accent-2 hover:bg-accent-2 active:scale-[.98] focus-visible:ring-4 focus-visible:ring-accent-soft focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 disabled:transform-none"
           onClick={() => onExport(window)}
         >
           Generate Excel Report

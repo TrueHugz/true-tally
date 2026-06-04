@@ -13,6 +13,28 @@
   --font-body: "Hanken Grotesk", system-ui, sans-serif;
   --font-mono: "Spline Sans Mono", ui-monospace, monospace;
 
+  /* Off-scale font sizes (exact values; on-scale sizes use named text-* utilities) */
+  --text-2xs: 10px;       /* micro caps labels (Take / Top Up) */
+  --text-tag: 11px;       /* uppercase mono tags, chips, table heads */
+  --text-meta: 13px;      /* mono meta / SKU / stat caption / details */
+  --text-note: 15px;      /* validation rows, toast copy */
+  --text-control: 17px;   /* form fields, activity segment, empty-state title */
+  --text-figure: 19px;    /* totals table figure */
+  --text-stepper: 32px;   /* quantity stepper +/- glyph */
+  --text-quantity: 52px;  /* hero quantity input */
+  --text-quantity-sm: 44px; /* hero quantity input (narrow) */
+  --text-wordmark: clamp(20px, 3.4vw, 26px); /* TrueHugz wordmark */
+  --text-stat: clamp(40px, 9vw, 58px);       /* dashboard total figure */
+
+  /* Letter-spacing tokens */
+  --tracking-display: -0.02em; /* display headings */
+  --tracking-stat: 0.06em;     /* dashboard stat caption */
+  --tracking-label: 0.08em;    /* uppercase field labels */
+  --tracking-caps: 0.12em;     /* mono "Inventory Log" caps */
+
+  /* Custom breakpoint for the compact (<=560px) layout tweaks */
+  --breakpoint-narrow: 560px;
+
   /* Color — light */
   --color-paper: #ECEFEC;
   --color-surface: #FFFFFF;
@@ -39,11 +61,18 @@
   --radius-field: 10px;
   --radius-card: 22px;
   --radius-pill: 999px;
+  --radius-tile: 14px;     /* header brand tile */
+  --radius-tile-lg: 20px;  /* sign-in brand tile */
 
   /* Shadows */
   --shadow-soft: 0 1px 2px rgba(16, 33, 28, .05);
   --shadow-card: 0 1px 2px rgba(16, 33, 28, .05), 0 10px 30px -12px rgba(16, 33, 28, .18);
   --shadow-pop: 0 24px 60px -20px rgba(16, 33, 28, .28);
+  --shadow-cta: 0 12px 26px -12px rgba(14, 124, 102, .65);              /* primary buttons */
+  --shadow-tile: 0 8px 22px -10px rgba(14, 124, 102, .7), inset 0 1px 0 rgba(255, 255, 255, .25);     /* header brand tile */
+  --shadow-tile-lg: 0 16px 40px -16px rgba(14, 124, 102, .8), inset 0 1px 0 rgba(255, 255, 255, .25); /* sign-in brand tile */
+  --shadow-segment: inset 0 1px 2px rgba(16, 33, 28, .04);             /* segmented control inset */
+  --shadow-dot: 0 0 0 4px rgba(0, 0, 0, .03);                          /* recent-entry status dot halo */
 
   /* Animations */
   --animate-rise: rise .5s ease both;
@@ -130,6 +159,11 @@
 /* ============================================================
    Complex effects that remain as CSS (referencing theme vars)
    ============================================================ */
+
+/* Brand tile jade gradient (background-image effect; size/radius/shadow via utilities) */
+.brand-tile {
+  background-image: linear-gradient(150deg, var(--color-accent) 0%, var(--color-accent-2) 100%);
+}
 
 /* Native <select> chevron + appearance reset (data-URI background) */
 .select-chevron {
