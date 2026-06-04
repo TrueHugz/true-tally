@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useIsFetching, useQueryClient } from "@tanstack/react-query";
 import type { PublicClientApplication } from "@azure/msal-browser";
 import { loginRequest } from "./auth/msalConfig";
 import { getAccessToken } from "./auth/authProvider";
@@ -58,14 +59,15 @@ export default function App({ msal }: { msal: PublicClientApplication }) {
   const account = msal.getActiveAccount();
   const today = todayISODate();
   const repo = useMemo(() => new GraphWorkbookRepo(() => getAccessToken(msal)), [msal]);
+  const queryClient = useQueryClient();
 
   const {
     institutions, branches, products,
-    reload: reloadCatalog, error: catalogError, loading: catalogLoading,
+    error: catalogError, loading: catalogLoading,
   } = useCatalog(repo);
   const queue = usePendingQueue(repo);
   const {
-    entries, reload: reloadLogs, error: logsError, loading: logsLoading,
+    entries, error: logsError, loading: logsLoading,
   } = useLogs(repo);
 
   const [institution, setInstitution] = useState("NUH Health & U");
@@ -73,17 +75,9 @@ export default function App({ msal }: { msal: PublicClientApplication }) {
   const [toast, setToast] = useState<{ product: string } | null>(null);
 
   const refresh = useCallback(() => {
-    void reloadCatalog();
-    void reloadLogs();
-  }, [reloadCatalog, reloadLogs]);
-
-  useEffect(() => {
-    const onFocus = () => {
-      if (msal.getActiveAccount()) refresh();
-    };
-    window.addEventListener("focus", onFocus);
-    return () => window.removeEventListener("focus", onFocus);
-  }, [refresh, msal]);
+    void queryClient.invalidateQueries({ queryKey: ["catalog"] });
+    void queryClient.invalidateQueries({ queryKey: ["logs"] });
+  }, [queryClient]);
 
   // Auto-dismiss the save toast.
   useEffect(() => {
@@ -92,6 +86,8 @@ export default function App({ msal }: { msal: PublicClientApplication }) {
     return () => clearTimeout(id);
   }, [toast]);
 
+  const refreshing = useIsFetching() > 0;
+
   if (!account) {
     return <SignInScreen onSignIn={() => void msal.loginRedirect(loginRequest)} />;
   }
@@ -99,7 +95,6 @@ export default function App({ msal }: { msal: PublicClientApplication }) {
   const scopedEntries: LogEntry[] = entries.filter((e) => e.institution === institution);
   const catalogReady = institutions.length > 0 || branches.length > 0 || products.length > 0;
   const showFormSkeleton = catalogLoading && !catalogReady;
-  const refreshing = catalogLoading || logsLoading;
 
   function handleSave(entry: NewEntry) {
     queue.enqueue({
@@ -116,7 +111,7 @@ export default function App({ msal }: { msal: PublicClientApplication }) {
       return;
     }
     await repo.addBranch({ institution, branch: name, remarks: "" });
-    await reloadCatalog();
+    await queryClient.invalidateQueries({ queryKey: ["catalog"] });
   }
 
   async function handleAddProduct(name: string) {
@@ -127,7 +122,7 @@ export default function App({ msal }: { msal: PublicClientApplication }) {
       return;
     }
     await repo.addProduct({ description: name, sku, type: "Bag" });
-    await reloadCatalog();
+    await queryClient.invalidateQueries({ queryKey: ["catalog"] });
   }
 
   async function handleExport(window: TimeWindow) {
@@ -168,7 +163,7 @@ export default function App({ msal }: { msal: PublicClientApplication }) {
         </div>
       </header>
 
-      <ViewToggle value={view} onChange={(v) => { setView(v); if (v === "dashboard") void reloadLogs(); }} />
+      <ViewToggle value={view} onChange={(v) => { setView(v); if (v === "dashboard") void queryClient.invalidateQueries({ queryKey: ["logs"] }); }} />
 
       {catalogError && (
         <StateBanner {...friendlyError(catalogError)} detail={catalogError} onRetry={refresh} />
