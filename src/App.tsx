@@ -10,7 +10,6 @@ import { exportToExcel } from "./export/excel";
 import { useCatalog } from "./hooks/useCatalog";
 import { useLogs } from "./hooks/useLogs";
 import { usePendingQueue } from "./hooks/usePendingQueue";
-import { loadPending } from "./queue/pendingStore";
 import { SignInScreen } from "./components/SignInScreen";
 import { InstitutionSelector } from "./components/InstitutionSelector";
 import { ViewToggle, type View } from "./components/ViewToggle";
@@ -67,7 +66,7 @@ export default function App({ msal }: { msal: PublicClientApplication }) {
   const queue = usePendingQueue(repo);
   const {
     entries, reload: reloadLogs, error: logsError, loading: logsLoading,
-  } = useLogs(repo, queue.version);
+  } = useLogs(repo);
 
   const [institution, setInstitution] = useState("NUH Health & U");
   const [view, setView] = useState<View>("log");
@@ -92,12 +91,6 @@ export default function App({ msal }: { msal: PublicClientApplication }) {
     const id = setTimeout(() => setToast(null), 2500);
     return () => clearTimeout(id);
   }, [toast]);
-
-  const pendingIds = useMemo(
-    () => new Set(loadPending().map((e) => e.entryId)),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [queue.version],
-  );
 
   if (!account) {
     return <SignInScreen onSignIn={() => void msal.loginRedirect(loginRequest)} />;
@@ -207,7 +200,7 @@ export default function App({ msal }: { msal: PublicClientApplication }) {
               onAddProduct={(n) => void handleAddProduct(n)}
             />
           )}
-          <RecentEntries entries={scopedEntries} pendingIds={pendingIds} loading={logsLoading} />
+          <RecentEntries entries={scopedEntries} pendingIds={queue.pendingIds} loading={logsLoading} />
         </>
       ) : (
         <DashboardView entries={scopedEntries} today={today} onExport={handleExport} loading={logsLoading} />
