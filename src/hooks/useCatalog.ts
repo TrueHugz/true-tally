@@ -1,33 +1,38 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
+import { useQuery } from "@tanstack/react-query";
 import type { WorkbookRepo } from "../data/repo";
 import type { Branch, Institution, Product } from "../data/types";
 
+const EMPTY = {
+  institutions: [] as Institution[],
+  branches: [] as Branch[],
+  products: [] as Product[],
+};
+
 export function useCatalog(repo: WorkbookRepo) {
-  const [institutions, setInstitutions] = useState<Institution[]>([]);
-  const [branches, setBranches] = useState<Branch[]>([]);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const reload = useCallback(async () => {
-    setLoading(true);
-    try {
+  const q = useQuery({
+    queryKey: ["catalog"],
+    queryFn: async () => {
       await repo.ensureWorkbook();
-      const [i, b, p] = await Promise.all([repo.getInstitutions(), repo.getBranches(), repo.getProducts()]);
-      setInstitutions(i);
-      setBranches(b);
-      setProducts(p);
-      setError(null);
-    } catch (e) {
-      setError(String(e));
-    } finally {
-      setLoading(false);
-    }
-  }, [repo]);
+      const [institutions, branches, products] = await Promise.all([
+        repo.getInstitutions(),
+        repo.getBranches(),
+        repo.getProducts(),
+      ]);
+      return { institutions, branches, products };
+    },
+  });
 
-  // Intentional load-on-mount: async fetch that setState()s after awaiting I/O, not a synchronous cascade.
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => { void reload(); }, [reload]);
+  const { refetch } = q;
+  const reload = useCallback(async () => { await refetch(); }, [refetch]);
+  const data = q.data ?? EMPTY;
 
-  return { institutions, branches, products, loading, error, reload };
+  return {
+    institutions: data.institutions,
+    branches: data.branches,
+    products: data.products,
+    loading: q.isPending,
+    error: q.error ? String(q.error) : null,
+    reload,
+  };
 }
