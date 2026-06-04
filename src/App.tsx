@@ -42,12 +42,18 @@ function friendlyError(raw: string): { title: string; message: string } {
   return { title: "Couldn't load data", message: "Something went wrong while loading. Please retry." };
 }
 
-const REFRESH_ICON = (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M3.5 12a8.5 8.5 0 0 1 14.5-6M20.5 12a8.5 8.5 0 0 1-14.5 6" />
-    <path d="M18 2.5V6h-3.5M6 21.5V18h3.5" />
-  </svg>
-);
+function RefreshIcon({ spinning }: { spinning: boolean }) {
+  return (
+    <svg
+      width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"
+      className={spinning ? "motion-safe:animate-spin" : ""}
+    >
+      <path d="M3.5 12a8.5 8.5 0 0 1 14.5-6M20.5 12a8.5 8.5 0 0 1-14.5 6" />
+      <path d="M18 2.5V6h-3.5M6 21.5V18h3.5" />
+    </svg>
+  );
+}
 
 export default function App({ msal }: { msal: PublicClientApplication }) {
   const account = msal.getActiveAccount();
@@ -148,20 +154,22 @@ export default function App({ msal }: { msal: PublicClientApplication }) {
             <span className="mt-0.75 font-mono text-tag uppercase tracking-caps text-ink-3">Inventory Log</span>
           </span>
         </div>
-        <div className="flex flex-wrap items-center gap-2.5 max-narrow:w-full max-narrow:justify-between">
-          <InstitutionSelector institutions={institutions} value={institution} onChange={setInstitution} />
+        <div className="flex flex-wrap items-center justify-end gap-2.5 max-narrow:w-full">
+          <div className="w-64 max-narrow:w-full">
+            <InstitutionSelector institutions={institutions} value={institution} onChange={setInstitution} />
+          </div>
           <SyncStatusChip state={queue.state} pendingCount={queue.pendingCount} onSync={() => void queue.sync()} />
           <button
             type="button"
-            className={`grid size-11 min-h-11 place-items-center rounded-pill border border-line-2 bg-surface p-0 text-ink-2 transition duration-150 ease-out hover:bg-surface-2 hover:text-ink active:scale-[.98] focus-visible:border-accent focus-visible:ring-4 focus-visible:ring-accent-soft focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 disabled:transform-none [&_svg]:block [&_svg]:size-5${refreshing ? " [&_svg]:animate-spin [&_svg]:[animation-duration:900ms]" : ""}`}
+            className="grid size-12.5 flex-none place-items-center rounded-pill border border-line-2 bg-surface text-ink-2 transition duration-150 ease-out hover:bg-surface-2 hover:text-ink active:scale-[.98] focus-visible:border-accent focus-visible:ring-4 focus-visible:ring-accent-soft focus-visible:outline-none"
             aria-label="Refresh"
             onClick={refresh}
           >
-            {REFRESH_ICON}
+            <RefreshIcon spinning={refreshing} />
           </button>
           <button
             type="button"
-            className="min-h-11 cursor-pointer rounded-field border border-line-2 bg-surface px-4.5 py-3 text-base font-semibold text-ink-2 transition duration-150 ease-out hover:bg-surface-2 hover:text-ink active:scale-[.98] focus-visible:border-accent focus-visible:ring-4 focus-visible:ring-accent-soft focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 disabled:transform-none"
+            className="min-h-12.5 flex-none cursor-pointer rounded-field border border-line-2 bg-surface px-5 py-3 text-base font-semibold text-ink-2 transition duration-150 ease-out hover:bg-surface-2 hover:text-ink active:scale-[.98] focus-visible:border-accent focus-visible:ring-4 focus-visible:ring-accent-soft focus-visible:outline-none"
             onClick={() => void msal.logoutRedirect()}
           >Sign out</button>
         </div>

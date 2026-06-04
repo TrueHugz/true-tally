@@ -9,8 +9,8 @@ export function SearchableSelect({
   options: Option[];
   value: string;
   onSelect: (value: string) => void;
-  onAddNew: (typedLabel: string) => void;
-  addNewLabel: string;
+  onAddNew?: (typedLabel: string) => void;
+  addNewLabel?: string;
 }) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -45,10 +45,14 @@ export function SearchableSelect({
               {o.label}
             </button>
           ))}
-          {filtered.length === 0 && !query.trim() && (
-            <div className="p-3.5 text-sm text-ink-3">No options yet — type to add one.</div>
+          {filtered.length === 0 && (
+            <div className="p-3.5 text-sm text-ink-3">
+              {onAddNew
+                ? query.trim() ? "No matches — add it below." : "No options yet — type to add one."
+                : query.trim() ? "No matches." : "No options."}
+            </div>
           )}
-          {query.trim() && (
+          {onAddNew && query.trim() && (
             <button
               type="button"
               className="mt-1 block min-h-12 w-full cursor-pointer rounded-b-field border border-transparent border-t-line bg-transparent px-3.5 py-3.25 text-left font-bold text-accent transition duration-150 ease-out hover:bg-accent-soft"
