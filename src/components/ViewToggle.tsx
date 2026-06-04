@@ -1,0 +1,14 @@
+import { Segmented } from "./Segmented";
+
+export type View = "log" | "dashboard";
+
+export function ViewToggle({ value, onChange }: { value: View; onChange: (v: View) => void }) {
+  return (
+    <Segmented
+      ariaLabel="View"
+      options={[{ value: "log", label: "Log Entry" }, { value: "dashboard", label: "Dashboard" }]}
+      value={value}
+      onChange={onChange}
+    />
+  );
+}
