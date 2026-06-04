@@ -59,7 +59,7 @@ export class GraphWorkbookRepo implements WorkbookRepo {
     }
     const created = await this.putContent(
       `/me/drive/root:/${encodeURIComponent(FILE_NAME)}:/content`,
-      buildSeedWorkbookBytes(),
+      await buildSeedWorkbookBytes(),
     );
     this.itemId = created.id;
     await this.defineTables();

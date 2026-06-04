@@ -64,10 +64,11 @@ export default function App({ msal }: { msal: PublicClientApplication }) {
     await reloadCatalog();
   }
 
-  function handleExport(window: TimeWindow) {
+  async function handleExport(window: TimeWindow) {
     const rows = filterByWindow(scopedEntries, window, today);
     const tag = window === "day" ? today : window === "month" ? today.slice(0, 7) : "ToDate";
-    exportToExcel(rows, `TrueHugz-${institution.replace(/\W+/g, "")}-${tag}.xlsx`);
+    try { await exportToExcel(rows, `TrueHugz-${institution.replace(/\W+/g, "")}-${tag}.xlsx`); }
+    catch (e) { alert(`Export failed: ${String(e)}`); }
   }
 
   return (

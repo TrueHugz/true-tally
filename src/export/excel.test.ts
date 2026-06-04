@@ -10,8 +10,8 @@ const entry: LogEntry = {
 };
 
 describe("buildWorkbook", () => {
-  it("creates a Report sheet with the 5 PRD columns in order", () => {
-    const wb = buildWorkbook([entry]);
+  it("creates a Report sheet with the 5 PRD columns in order", async () => {
+    const wb = await buildWorkbook([entry]);
     expect(wb.SheetNames).toEqual(["Report"]);
     const ws = wb.Sheets["Report"];
     const aoa = utils.sheet_to_json<string[]>(ws, { header: 1 });

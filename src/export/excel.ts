@@ -1,8 +1,9 @@
-import { utils, writeFileXLSX, type WorkBook } from "xlsx";
 import { toExportRows, EXPORT_HEADERS } from "../domain/exportRows";
 import type { LogEntry } from "../data/types";
+import type { WorkBook } from "xlsx";
 
-export function buildWorkbook(entries: LogEntry[]): WorkBook {
+export async function buildWorkbook(entries: LogEntry[]): Promise<WorkBook> {
+  const { utils } = await import("xlsx");
   const rows = toExportRows(entries);
   const ws = utils.json_to_sheet(rows, { header: [...EXPORT_HEADERS] });
   const wb = utils.book_new();
@@ -10,6 +11,7 @@ export function buildWorkbook(entries: LogEntry[]): WorkBook {
   return wb;
 }
 
-export function exportToExcel(entries: LogEntry[], filename: string): void {
-  writeFileXLSX(buildWorkbook(entries), filename);
+export async function exportToExcel(entries: LogEntry[], filename: string): Promise<void> {
+  const { writeFileXLSX } = await import("xlsx");
+  writeFileXLSX(await buildWorkbook(entries), filename);
 }

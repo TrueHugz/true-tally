@@ -3,8 +3,8 @@ import { read, utils } from "xlsx";
 import { buildSeedWorkbookBytes } from "./seedWorkbook";
 
 describe("buildSeedWorkbookBytes", () => {
-  it("produces a workbook with the four named sheets and seeded headers", () => {
-    const wb = read(buildSeedWorkbookBytes(), { type: "array" });
+  it("produces a workbook with the four named sheets and seeded headers", async () => {
+    const wb = read(await buildSeedWorkbookBytes(), { type: "array" });
     expect(wb.SheetNames).toEqual(["Institutions", "Branches", "Products", "Logs"]);
 
     const products = utils.sheet_to_json<string[]>(wb.Sheets["Products"], { header: 1 });

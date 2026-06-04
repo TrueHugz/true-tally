@@ -1,4 +1,3 @@
-import { utils, write } from "xlsx";
 import { SEED } from "./seed";
 import {
   INSTITUTION_COLUMNS, BRANCH_COLUMNS, PRODUCT_COLUMNS, LOG_COLUMNS,
@@ -8,7 +7,8 @@ import {
 type Cell = string | number;
 
 /** Build an .xlsx (as bytes) with header rows + seed data, ready to upload to OneDrive. */
-export function buildSeedWorkbookBytes(): ArrayBuffer {
+export async function buildSeedWorkbookBytes(): Promise<ArrayBuffer> {
+  const { utils, write } = await import("xlsx");
   const wb = utils.book_new();
   const addSheet = (name: string, header: readonly string[], rows: Cell[][]) => {
     const ws = utils.aoa_to_sheet([[...header], ...rows]);
